@@ -1,33 +1,55 @@
-const usuarios = [];
+const productos = [];
 
-/*NOTA: decidí que por ahora solo haré los usuarios con arrays, porque en el futuro serán los usuarios, los productos a vender, el carrito creados con objects*/
+/*NOTA: en un futuro la lógica se va a mantener, pero se van a crear como objetos*/
 
-function crearUsuario(){
-    let fullName = prompt("Ingrese su nombre y apellido");
-    let email = prompt("Ingrese su email");
+function crearProducto(){
+    let name = prompt("Ingrese el producto (ej. teclado, mouse, etc)");
+    let price = prompt("Ingrese el precio del producto");
+    let stock = prompt("Ingrese la cantidad de stock del producto");
 
-    let usuario = {name: fullName, email: email};
-    usuarios.push(usuario);
-    alert("El usuario " + usuario.name + " ha sido creado correctamente");
+    let producto = {name: name, price: price, stock: stock};
+    productos.push(producto);
+    alert("El producto " + producto.name + " ha sido creado correctamente");
 }
 
-function listarUsuarios(){
-    for (const usuario of usuarios){
-        console.table(usuarios);
+function listarProductos(){
+    for (const producto of productos){
+        console.table(producto);
     }
+}
+
+function buscarProducto(nombre){
+    for (const producto of productos){
+        if (producto.name === nombre){
+            return producto;
+        }
+    }
+}
+
+function descontarStock(producto, cant){
+    producto.stock -= cant;
+    alert("El stock es ahora de: " + producto.stock);
 }
 
 function main(){
     let band = true;
+    let carrito = [];
     while(band === true){
-        let op = parseInt(prompt("1. Desea crear un usuario, 2. Desea ver los usuarios"));
+        let op = parseInt(prompt("1. Desea crear un producto, 2. Desea ver todos los productos, 3. Crear carrito"));
 
         switch (op){
             case 1:
-                crearUsuario();
+                crearProducto();
                 break;
             case 2:
-                listarUsuarios();
+                listarProductos();
+                break;
+            case 3:
+                let nombre = prompt("Ingrese el nombre del producto que desea agregar al carrito");
+                let producto = buscarProducto(nombre);
+                let cant = prompt("Ingrese la cantidad de productos que desea agregar al carrito");
+                descontarStock(producto, cant);
+                carrito.push({producto, cant});
                 break;
             default:
                 alert("Elija una opcion valida");
