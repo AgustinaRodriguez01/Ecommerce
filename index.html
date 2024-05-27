@@ -4,11 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda online</title>
-    <script src="./scripts/script1.js"></script>
+    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <h1>Aquí se encuentrará la tienda</h1>
-    <p>Este proyecto es para crear una tienda online, para la venta de insumos informáticos, como pantallas, teclados, etc.</p>
-    <p>Tendrá un head y un footer</p>
+    <header>
+        <h1>Informatics Shop</h1>
+        <div class="header-icons">
+            <a href="#" class="icon-button" id="userIcon"><i class="fas fa-user"></i></a>
+            <a href="#" class="icon-button" id="cartIcon"><i class="fas fa-shopping-cart"></i></a>
+        </div>
+    </header>
+    <div class="container">
+        <aside id="sidebar" class="sidebar">
+            <h2>Categorías</h2>
+            <ul>
+                <li><a href="#">Todos los productos</a></li>
+                <li><a href="#">Mouses</a></li>
+                <li><a href="#">Teclados</a></li>
+                <li><a href="#">Monitores</a></li>
+            </ul>
+        </aside>
+        <main class="main-content">
+            <h2>Productos</h2>
+            <div id="container-products">
+                
+            </div>
+        </main>
+    </div>
+    <footer>
+        <p>&copy; 2024 Tienda Online. Todos los derechos reservados.</p>
+    </footer>
+
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeUserModal">&times;</span>
+            <h2>Iniciar Sesión</h2>
+            <form>
+                <label for="email">Correo Electrónico:</label><br>
+                <input type="email" id="email" name="email" required><br>
+                <label for="password">Contraseña:</label><br>
+                <input type="password" id="password" name="password" required><br><br>
+                <button type="submit" id="btnAcceder">Acceder</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Carrito -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeCartModal">&times;</span>
+            <h2>Carrito de Compras</h2>
+            <div class="cart-container">
+                <div class="cart-products">
+                    <h3>Productos en el carrito</h3>
+                    <hr class="line">
+                    <!-- Ejemplo de producto en el carrito -->
+                    <div class="cart-product">
+                        <p>Producto: Mouse Gamer</p>
+                        <p>Cantidad: 2</p>
+                        <p>Precio unitario: $25.00</p>
+                    </div>
+                    <div class="cart-product">
+                        <p>Producto: Teclado Mecánico</p>
+                        <p>Cantidad: 1</p>
+                        <p>Precio unitario: $75.00</p>
+                    </div>
+                </div>
+                <div class="cart-summary">
+                    <h3>Resumen del Pedido</h3>
+                    <!-- Ejemplo de resumen -->
+                    <p>Mouse Gamer x2: $50.00</p>
+                    <p>Teclado Mecánico x1: $75.00</p>
+                    <hr>
+                    <p>Total: $125.00</p>
+                    <button type="button" class="pay-button">Pagar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./scripts/script.js"></script>
 </body>
 </html>
