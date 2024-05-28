@@ -10,11 +10,15 @@ class Product {
         this.stock = stock;
     }
 
-    decreaseStock = function(cant){
-        this.stock -= cant;
+    decreaseStock(cant) {
+        if (cant <= this.stock) {
+            this.stock -= cant;
+        } else {
+            console.error(`No hay suficiente stock disponible para ${this.name}`);
+        }
     }
 
-    increaseStock = function(cant){
+    increaseStock(cant) {
         this.stock += cant;
     }
 

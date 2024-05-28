@@ -16,13 +16,13 @@
         </div>
     </header>
     <div class="container">
-        <aside id="sidebar" class="sidebar">
+        <aside class="sidebar">
             <h2>Categorías</h2>
             <ul>
-                <li><a href="#">Todos los productos</a></li>
-                <li><a href="#">Mouses</a></li>
-                <li><a href="#">Teclados</a></li>
-                <li><a href="#">Monitores</a></li>
+                <li><a href="#" id="todosLink">Todos los productos</a></li>
+                <li><a href="#" id="mousesLink">Mouses</a></li>
+                <li><a href="#" id="tecladosLink">Teclados</a></li>
+                <li><a href="#" id="monitoresLink">Monitores</a></li>
             </ul>
         </aside>
         <main class="main-content">
@@ -50,7 +50,6 @@
         </div>
     </div>
 
-    <!-- Modal de Carrito -->
     <div id="cartModal" class="modal">
         <div class="modal-content">
             <span class="close" id="closeCartModal">&times;</span>
@@ -59,28 +58,30 @@
                 <div class="cart-products">
                     <h3>Productos en el carrito</h3>
                     <hr class="line">
-                    <!-- Ejemplo de producto en el carrito -->
-                    <div class="cart-product">
-                        <p>Producto: Mouse Gamer</p>
-                        <p>Cantidad: 2</p>
-                        <p>Precio unitario: $25.00</p>
-                    </div>
-                    <div class="cart-product">
-                        <p>Producto: Teclado Mecánico</p>
-                        <p>Cantidad: 1</p>
-                        <p>Precio unitario: $75.00</p>
+                    <div id="cartProducts">
+                        <!-- Aca irian los producto en el carrito -->
                     </div>
                 </div>
                 <div class="cart-summary">
                     <h3>Resumen del Pedido</h3>
-                    <!-- Ejemplo de resumen -->
-                    <p>Mouse Gamer x2: $50.00</p>
-                    <p>Teclado Mecánico x1: $75.00</p>
-                    <hr>
-                    <p>Total: $125.00</p>
-                    <button type="button" class="pay-button">Pagar</button>
+                    <hr class="line">
+                    <!-- Aquí iría el resumen del carrito -->
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="productAddedModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Producto agregado al carrito</p>
+        </div>
+    </div>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Debe iniciar sesión para agregar productos al carrito</p>
         </div>
     </div>
 

@@ -1,3 +1,5 @@
+import GroceryCart from './GroceryCartClass.js'
+
 class User {
 
     static id = 0;
@@ -5,8 +7,8 @@ class User {
     constructor(email, password){
         this.id = User.id++;
         this.email = email;
-
         this.password = password;
+        this.carrito = new GroceryCart();
     }
 }
 
