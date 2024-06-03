@@ -1,32 +1,11 @@
-// Importar las clases creadas
+// Importar las clases creadas y los productos de ejemplo
 import User from './UserClass.js';
 import GroceryCart from './GroceryCartClass.js';
 import Product from './ProductClass.js';
+import productos from './productos.js';
 
 // Variable global para guardar el usuario que inició sesión
 let userActivo = null;
-
-// Cargar datos desde el archivo JSON
-let users = [];
-let productos = [];
-
-async function cargarDatos() {
-    const response = await fetch('data.json');
-    const data = await response.json();
-    users = data.users.map(user => Object.assign(new User(), user));
-    productos = data.productos.map(producto => Object.assign(new Product(), producto));
-    main();
-}
-
-// Guardar datos en el archivo JSON (esto requiere un servidor o ambiente backend para funcionar)
-async function guardarDatos() {
-    const data = { users, productos };
-    await fetch('data.json', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    });
-}
 
 // Elementos para manejo de modales
 const cartIcon = document.getElementById("cartIcon");
@@ -69,18 +48,6 @@ window.addEventListener('click', (event) => {
     }
 });
 
-// Crear producto
-function CrearProducto() {
-    let name = prompt("Ingrese el nombre del producto");
-    let type = prompt("Ingrese el tipo de producto");
-    let price = parseInt(prompt("Ingrese el precio del producto"));
-    let stock = parseInt(prompt("Ingrese el stock del producto"));
-    let product = new Product(name, type, price, stock);
-    productos.push(product);
-    guardarDatos();
-    console.log(productos);
-}
-
 const inicioExitoso = (user) => {
     const helloName = document.getElementById("userIcon");
     helloName.innerHTML = `<p>Hola, ${user.email}</p>`;
@@ -97,6 +64,7 @@ btnAcceder.addEventListener("click", () => {
     const mail = document.getElementById("email").value;
     const psw = document.getElementById("password").value;
 
+    const users = JSON.parse(localStorage.getItem("users")) || [];
     const user = users.find(user => user.email === mail && user.password === psw);
 
     if (user) {
@@ -105,7 +73,7 @@ btnAcceder.addEventListener("click", () => {
         let user = new User(mail, psw);
         user.carrito = new GroceryCart();
         users.push(user);
-        guardarDatos();
+        localStorage.setItem("users", JSON.stringify(users));
         inicioExitoso(user);
     }
 });
@@ -159,13 +127,14 @@ monitoresLink.addEventListener("click", () => { filtrarProductos("Monitor") });
 // Agregar producto al carrito
 const agregarProductoAlCarrito = (productoNombre) => {
     const producto = productos.find(p => p.name === productoNombre);
+    const users = JSON.parse(localStorage.getItem("users")) || [];
     if (producto && userActivo) {
         if (!userActivo.carrito) {
             userActivo.carrito = new GroceryCart();
         }
         addProductToCart(producto);
         actualizarCarrito();
-        guardarDatos();
+        localStorage.setItem("users", JSON.stringify(users));
         openModal(productAddedModal);
     } else {
         openModal(loginModal);
@@ -233,5 +202,4 @@ const actualizarCarrito = () => {
 }
 
 // Se carga la página principal
-cargarDatos();
-
+main();
