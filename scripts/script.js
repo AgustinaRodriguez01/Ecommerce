@@ -40,11 +40,13 @@ window.addEventListener('click', (event) => {
     }
 });
 
+/* MANEJO DE USUARIOS */
 const inicioExitoso = (user) => {
     const helloName = document.getElementById("userIcon");
     helloName.innerHTML = `<p>Hola, ${user.email}</p>`;
     closeModal(userModal);
     userActivo = Object.assign(new User(), user);
+    actualizarCarrito();
 }
 
 const btnAcceder = document.getElementById("btnAcceder");
@@ -58,14 +60,34 @@ btnAcceder.addEventListener("click", () => {
 
     if (user) {
         inicioExitoso(user);
+        Swal.fire({
+            title: 'Perfecto!',
+            text: 'Has iniciado sesión con una cuenta ya creada',
+            icon: 'success'
+        });
     } else {
-        let user = new User(mail, psw);
-        users.push(user);
+        let newUser = new User(mail, psw);
+        users.push(newUser);
         localStorage.setItem("users", JSON.stringify(users));
-        inicioExitoso(user);
+        inicioExitoso(newUser);
+        Swal.fire({
+            title: 'Perfecto!',
+            text: 'Se ha creado un nuevo usuario',
+            icon: 'success'
+        });
     }
 });
 
+const replicarCarrito = () => {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const userIndex = users.findIndex(u => u.email === userActivo.email);
+    if (userIndex !== -1) {
+        users[userIndex].carrito = userActivo.carrito;
+        localStorage.setItem("users", JSON.stringify(users));
+    }
+}
+
+/* MANEJO DE PRODUCTOS */
 const divProductos = document.getElementById("container-products");
 
 const main = async () => {
@@ -123,11 +145,11 @@ mousesLink.addEventListener("click", () => { filtrarProductos("Mouse") });
 tecladosLink.addEventListener("click", () => { filtrarProductos("Teclado") });
 monitoresLink.addEventListener("click", () => { filtrarProductos("Monitor") });
 
+/* MANEJO DEL CARRITO */
 const agregarProductoAlCarrito = async (productoNombre) => {
     const productos = await traerProductos();
 
     const producto = productos.find(p => p.name === productoNombre);
-    const users = JSON.parse(localStorage.getItem("users")) || [];
     if (producto && userActivo) {
         agregarCarritoCliente(producto);
         actualizarCarrito();
@@ -136,7 +158,6 @@ const agregarProductoAlCarrito = async (productoNombre) => {
             text: 'Se ha agregado el producto al carrito',
             icon: 'success'
         });
-        localStorage.setItem("users", JSON.stringify(users));
     } else {
         Swal.fire({
             title: 'Error',
@@ -153,11 +174,12 @@ const agregarCarritoCliente = (product) => {
     } else {
         userActivo.carrito.push({ product, cant: 1 }); // La cantidad inicial es 1
     }
+    replicarCarrito();
 }
 
-// Eliminar producto del carrito
-const EliminarProductCarrito = (product, cant) => {
+const EliminarProductCarrito = (product) => {
     userActivo.carrito = userActivo.carrito.filter(p => p.product.name !== product.name);
+    replicarCarrito();
 }
 
 const actualizarCarrito = () => {
@@ -182,7 +204,7 @@ const actualizarCarrito = () => {
 
             const btnEliminar = document.getElementById(`btnDelete_${product.name}`);
             btnEliminar.addEventListener('click', () => {
-                EliminarProductCarrito(product, cant);
+                EliminarProductCarrito(product);
                 actualizarCarrito();
             });
 
@@ -197,6 +219,7 @@ const actualizarCarrito = () => {
         btnVaciarCarrito.innerHTML = `<button id="btnVaciarCarrito" class="btn-vaciar-carrito">Vaciar Carrito</button>`
         btnVaciarCarrito.addEventListener('click', () => {
             userActivo.carrito = [];
+            replicarCarrito();
             actualizarCarrito();
         });
         cartProductsDiv.appendChild(btnVaciarCarrito);
