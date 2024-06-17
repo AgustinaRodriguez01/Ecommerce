@@ -1,6 +1,5 @@
 // Importar las clases creadas y los productos de ejemplo
 import User from './UserClass.js';
-import GroceryCart from './GroceryCartClass.js';
 import Product from './ProductClass.js';
 
 // Variable global para guardar el usuario que inició sesión
@@ -13,10 +12,6 @@ const cartModal = document.getElementById("cartModal");
 const userModal = document.getElementById("userModal");
 const closeUserModal = document.getElementById('closeUserModal');
 const closeCartModal = document.getElementById('closeCartModal');
-const loginModal = document.getElementById('loginModal');
-const productAddedModal = document.getElementById('productAddedModal');
-const closeProductAddedModal = document.getElementById('productAddedModal');
-const closeLoginModal = document.getElementById('loginModal');
 
 // Modales
 function openModal(modal) {
@@ -34,8 +29,6 @@ cartIcon.addEventListener("click", () => openModal(cartModal));
 // Cerrar modales
 closeUserModal.addEventListener("click", () => closeModal(userModal));
 closeCartModal.addEventListener("click", () => closeModal(cartModal));
-closeLoginModal.addEventListener("click", () => closeModal(loginModal));
-closeProductAddedModal.addEventListener("click", () => closeModal(productAddedModal));
 
 // Cerrar modal por fuera del mismo
 window.addEventListener('click', (event) => {
@@ -52,9 +45,6 @@ const inicioExitoso = (user) => {
     helloName.innerHTML = `<p>Hola, ${user.email}</p>`;
     closeModal(userModal);
     userActivo = Object.assign(new User(), user);
-    if (!userActivo.carrito) {
-        userActivo.carrito = new GroceryCart();
-    }
 }
 
 const btnAcceder = document.getElementById("btnAcceder");
@@ -70,7 +60,6 @@ btnAcceder.addEventListener("click", () => {
         inicioExitoso(user);
     } else {
         let user = new User(mail, psw);
-        user.carrito = new GroceryCart();
         users.push(user);
         localStorage.setItem("users", JSON.stringify(users));
         inicioExitoso(user);
@@ -118,11 +107,10 @@ const filtrarProductos = async (tipo) => {
             <h3>${prod.name}</h3>
             <p>${prod.type}</p>
             <p>Precio: ${prod.price}</p>
-            <button id="btnAgregar_${prod.name}" class="add-to-cart-button">Agregar al carrito</button>
+            <button id="btnAgregar_${prod.name}" class="btn-agregar-producto">Agregar al carrito</button>
         </div>`;
         divProductos.appendChild(div);
 
-        // Agregar evento al botón de agregar al carrito
         const btnAgregar = document.getElementById(`btnAgregar_${prod.name}`);
         btnAgregar.addEventListener("click", () => {
             agregarProductoAlCarrito(prod.name);
@@ -135,49 +123,43 @@ mousesLink.addEventListener("click", () => { filtrarProductos("Mouse") });
 tecladosLink.addEventListener("click", () => { filtrarProductos("Teclado") });
 monitoresLink.addEventListener("click", () => { filtrarProductos("Monitor") });
 
-// Agregar producto al carrito
 const agregarProductoAlCarrito = async (productoNombre) => {
     const productos = await traerProductos();
 
     const producto = productos.find(p => p.name === productoNombre);
     const users = JSON.parse(localStorage.getItem("users")) || [];
     if (producto && userActivo) {
-        if (!userActivo.carrito) {
-            userActivo.carrito = new GroceryCart();
-        }
-        addProductToCart(producto);
+        agregarCarritoCliente(producto);
         actualizarCarrito();
+        Swal.fire({
+            title: 'Perfecto!',
+            text: 'Se ha agregado el producto al carrito',
+            icon: 'success'
+        });
         localStorage.setItem("users", JSON.stringify(users));
-        openModal(productAddedModal);
     } else {
-        openModal(loginModal);
+        Swal.fire({
+            title: 'Error',
+            text: 'Debes iniciar sesión para agregar productos al carrito',
+            icon: 'error'
+        });
     }
 }
 
-// Agregar producto al carrito (función auxiliar)
-const addProductToCart = (product) => {
-    const existingProduct = userActivo.carrito.products.find(p => p.product.name === product.name);
+const agregarCarritoCliente = (product) => {
+    const existingProduct = userActivo.carrito.find(p => p.product.name === product.name);
     if (existingProduct) {
         existingProduct.cant += 1;
     } else {
-        userActivo.carrito.products.push({ product, cant: 1 }); // La cantidad inicial es 1
+        userActivo.carrito.push({ product, cant: 1 }); // La cantidad inicial es 1
     }
 }
 
 // Eliminar producto del carrito
-const deleteProductFromCart = (product, cant) => {
-    const index = userActivo.carrito.products.findIndex(p => p.product.id === product.id);
-    if (index !== -1) {
-        if (userActivo.carrito.products[index].cant > cant) {
-            userActivo.carrito.products[index].cant -= cant;
-        } else {
-            userActivo.carrito.products.splice(index, 1);
-        }
-        product.increaseStock(cant);
-    }
+const EliminarProductCarrito = (product, cant) => {
+    userActivo.carrito = userActivo.carrito.filter(p => p.product.name !== product.name);
 }
 
-// Actualizar carrito
 const actualizarCarrito = () => {
     const cartProductsDiv = document.getElementById('cartProducts');
     const cartSummaryDiv = document.querySelector('.cart-summary');
@@ -186,16 +168,23 @@ const actualizarCarrito = () => {
 
     let total = 0;
 
-    if (userActivo && userActivo.carrito) {
-        userActivo.carrito.products.forEach(({ product, cant }) => {
+    if (userActivo) {
+        userActivo.carrito.forEach(({ product, cant }) => {
             const div = document.createElement('div');
             div.classList.add('cart-product');
             div.innerHTML = `
                 <p>Producto: ${product.name}</p>
                 <p>Cantidad: ${cant}</p>
                 <p>Precio unitario: $${product.price.toFixed(2)}</p>
-            `;
+                <button id="btnDelete_${product.name}" class="btn-eliminar-producto">Eliminar</button>
+            `; 
             cartProductsDiv.appendChild(div);
+
+            const btnEliminar = document.getElementById(`btnDelete_${product.name}`);
+            btnEliminar.addEventListener('click', () => {
+                EliminarProductCarrito(product, cant);
+                actualizarCarrito();
+            });
 
             const summaryItem = document.createElement('p');
             const subtotal = product.price * cant;
@@ -203,6 +192,14 @@ const actualizarCarrito = () => {
             summaryItem.textContent = `${product.name} x${cant}: $${subtotal.toFixed(2)}`;
             cartSummaryDiv.appendChild(summaryItem);
         });
+
+        const btnVaciarCarrito = document.createElement('button');
+        btnVaciarCarrito.innerHTML = `<button id="btnVaciarCarrito" class="btn-vaciar-carrito">Vaciar Carrito</button>`
+        btnVaciarCarrito.addEventListener('click', () => {
+            userActivo.carrito = [];
+            actualizarCarrito();
+        });
+        cartProductsDiv.appendChild(btnVaciarCarrito);
     }
 
     const totalDiv = document.createElement('p');

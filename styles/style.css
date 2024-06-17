@@ -213,18 +213,23 @@ footer {
     border-color: #80cbc4;
 }
 
-.modal-content button {
+.btn-acceder {
+    background-color: #319494ce;
+    color: white;
+    border: none;
     padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.modal-content button {
     border: none;
     border-radius: 4px;
-    background-color: #80cbc4;
     color: #fff;
     cursor: pointer;
     transition: background-color 0.3s;
-}
-
-.modal-content button:hover {
-    background-color: #4f9a94;
 }
 
 .cart-container {
@@ -288,26 +293,71 @@ footer {
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.5);
-  }
+}
   
-  .modal-content {
+.modal-content {
     background-color: #fefefe;
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
-  }
+}
   
-  .close {
+.close {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
-  }
+}
   
-  .close:hover,
-  .close:focus {
+.close:hover,
+.close:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;
-  }
+}
+
+.btn-eliminar-producto {
+    background-color: #319494ce;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 20px;
+    width: 100%;
+}
+  
+.btn-eliminar-producto:hover {
+    background-color: #1a5555ce;
+}
+
+.btn-agregar-producto {
+    background-color: #319494ce;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.btn-agregar-producto:hover {
+        background-color: #1a5555ce;
+}
+
+.btn-vaciar-carrito {
+    background-color: #e00c0ce8;
+    margin-top: 10px;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.btn-vaciar-carrito:hover {
+    background-color: #a20a0ae8;
+}
