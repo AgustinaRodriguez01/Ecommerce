@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Mouse Óptico",
+        "type": "Mouse",
+        "price": 25,
+        "stock": 100
+    },
+    {
+        "name": "Teclado Mecánico",
+        "type": "Teclado",
+        "price": 75,
+        "stock": 50
+    },
+    {
+        "name": "Monitor 4K",
+        "type": "Monitor",
+        "price": 300,
+        "stock": 30
+    },
+    {
+        "name": "Auriculares Gaming",
+        "type": "Auriculares",
+        "price": 45,
+        "stock": 80
+    }
+]

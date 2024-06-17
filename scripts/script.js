@@ -2,7 +2,6 @@
 import User from './UserClass.js';
 import GroceryCart from './GroceryCartClass.js';
 import Product from './ProductClass.js';
-import productos from './productos.js';
 
 // Variable global para guardar el usuario que inició sesión
 let userActivo = null;
@@ -80,8 +79,18 @@ btnAcceder.addEventListener("click", () => {
 
 const divProductos = document.getElementById("container-products");
 
-const main = () => {
+const main = async () => {
     filtrarProductos("Todos");
+}
+
+const traerProductos = async () => {
+    try {
+        const respuesta = await fetch('./scripts/Productos.json');
+        const data = await respuesta.json();
+        return data;
+    } catch (error) {
+        console.error('Error al cargar los productos: ', error);
+    }
 }
 
 // Filtrar productos según lo pedido
@@ -90,31 +99,33 @@ const mousesLink = document.getElementById("mousesLink");
 const tecladosLink = document.getElementById("tecladosLink");
 const monitoresLink = document.getElementById("monitoresLink");
 
-const filtrarProductos = (tipo) => {
+const filtrarProductos = async (tipo) => {
+    const productos = await traerProductos();
+
     divProductos.innerHTML = '';
     let productosFiltrados;
 
     if (tipo === "Todos") {
         productosFiltrados = productos;
     } else {
-        productosFiltrados = productos.filter(produ => produ.type === tipo);
+        productosFiltrados = productos.filter(prod => prod.type === tipo);
     }
 
-    productosFiltrados.forEach(produ => {
+    productosFiltrados.forEach(prod => {
         const div = document.createElement("div");
         div.innerHTML = `
         <div class="product">
-            <h3>${produ.name}</h3>
-            <p>${produ.type}</p>
-            <p>Precio: ${produ.price}</p>
-            <button id="btnAgregar_${produ.name}" class="add-to-cart-button">Agregar al carrito</button>
+            <h3>${prod.name}</h3>
+            <p>${prod.type}</p>
+            <p>Precio: ${prod.price}</p>
+            <button id="btnAgregar_${prod.name}" class="add-to-cart-button">Agregar al carrito</button>
         </div>`;
         divProductos.appendChild(div);
 
         // Agregar evento al botón de agregar al carrito
-        const btnAgregar = document.getElementById(`btnAgregar_${produ.name}`);
+        const btnAgregar = document.getElementById(`btnAgregar_${prod.name}`);
         btnAgregar.addEventListener("click", () => {
-            agregarProductoAlCarrito(produ.name);
+            agregarProductoAlCarrito(prod.name);
         });
     });
 }
@@ -125,7 +136,9 @@ tecladosLink.addEventListener("click", () => { filtrarProductos("Teclado") });
 monitoresLink.addEventListener("click", () => { filtrarProductos("Monitor") });
 
 // Agregar producto al carrito
-const agregarProductoAlCarrito = (productoNombre) => {
+const agregarProductoAlCarrito = async (productoNombre) => {
+    const productos = await traerProductos();
+
     const producto = productos.find(p => p.name === productoNombre);
     const users = JSON.parse(localStorage.getItem("users")) || [];
     if (producto && userActivo) {
