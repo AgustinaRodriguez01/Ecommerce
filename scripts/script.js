@@ -232,6 +232,72 @@ const actualizarCarrito = () => {
     btnPagar.textContent = 'Pagar';
     cartSummaryDiv.appendChild(totalDiv);
     cartSummaryDiv.appendChild(btnPagar);
+
+    btnPagar.addEventListener('click', async () => {
+        if (userActivo.carrito.length > 0) {
+            // Elegir método de pago
+            const inputOptions = new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve({
+                        "Transferencia": "Transferencia",
+                        "Débito": "Débito",
+                        "Crédito": "Crédito"
+                    });
+                }, 1000);
+            });
+            const { value: metodoPago } = await Swal.fire({
+                title: "Seleccione un método de pago",
+                input: "radio",
+                inputOptions,
+                inputValidator: (value) => {
+                    if (!value) {
+                        return "Debe elegir un método de pago";
+                    }
+                }
+            });
+            if (metodoPago) {
+                Swal.fire({ html: `Has seleccionado: ${metodoPago}` });
+            }
+
+            // Validar la compra
+            const result = await Swal.fire({
+                title: "Desea confirmar la compra?",
+                icon: "warning",
+                showCancelButton: true,
+                showConfirmButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                width:400,
+                timer:5000,
+                position:"center",
+                padding:"20px",
+                color:"#fff",
+                background:"#000",
+            })
+            if(result.isConfirmed){
+                Swal.fire({
+                    title: 'Compra realizada con éxito!',
+                    text: 'Gracias por su compra',
+                    icon: 'success'
+                });
+                
+                closeModal(cartModal);
+
+                // Vaciar carrito
+                userActivo.carrito = [];
+                replicarCarrito();
+                actualizarCarrito();
+            }
+        }
+        else {
+            Swal.fire({
+                title: 'Error',
+                text: 'No hay productos en el carrito',
+                icon: 'error'
+            });
+        }
+        
+    })
 }
 
 // Se carga la página principal
