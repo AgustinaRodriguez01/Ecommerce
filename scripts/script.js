@@ -56,25 +56,35 @@ btnAcceder.addEventListener("click", () => {
     const psw = document.getElementById("password").value;
 
     const users = JSON.parse(localStorage.getItem("users")) || [];
-    const user = users.find(user => user.email === mail && user.password === psw);
-
+    console.log(users);
+    const user = users.find(user => user.email === mail);
     if (user) {
+        if (user.password === psw) {
         inicioExitoso(user);
         Swal.fire({
             title: 'Perfecto!',
             text: 'Has iniciado sesión con una cuenta ya creada',
             icon: 'success'
         });
+        }
+        else {
+            Swal.fire({
+                title: 'Error',
+                text: 'Contraseña incorrecta',
+                icon: 'error'
+            });
+        }
     } else {
         let newUser = new User(mail, psw);
         users.push(newUser);
         localStorage.setItem("users", JSON.stringify(users));
         inicioExitoso(newUser);
+        setTimeout(
         Swal.fire({
             title: 'Perfecto!',
             text: 'Se ha creado un nuevo usuario',
             icon: 'success'
-        });
+        }), 3000);
     }
 });
 
