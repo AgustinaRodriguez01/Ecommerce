@@ -49,9 +49,11 @@ const inicioExitoso = (user) => {
     actualizarCarrito();
 }
 
-const btnAcceder = document.getElementById("btnAcceder");
+const loginForm = document.getElementById("loginForm");
 
-btnAcceder.addEventListener("click", () => {
+loginForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
     const mail = document.getElementById("email").value;
     const psw = document.getElementById("password").value;
 
@@ -79,12 +81,11 @@ btnAcceder.addEventListener("click", () => {
         users.push(newUser);
         localStorage.setItem("users", JSON.stringify(users));
         inicioExitoso(newUser);
-        setTimeout(
         Swal.fire({
             title: 'Perfecto!',
             text: 'Se ha creado un nuevo usuario',
             icon: 'success'
-        }), 3000);
+        });
     }
 });
 
